@@ -1,20 +1,31 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit"
 import themeConfigSlice from "./theme/themeConfigSlice"
 import { useDispatch, useSelector, TypedUseSelectorHook } from "react-redux"
-import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE, persistReducer, persistStore } from "redux-persist"
-import { useMemo } from "react"
+import {
+  FLUSH,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+  REHYDRATE,
+  persistReducer,
+  persistStore,
+} from "redux-persist"
 import createWebStorage from "redux-persist/lib/storage/createWebStorage"
 
 // Create a noop storage for SSR
 const createNoopStorage = () => {
   return {
     getItem(_key: string) {
+      console.log(_key)
       return Promise.resolve(null)
     },
     setItem(_key: string, value: any) {
+      console.log(_key)
       return Promise.resolve(value)
     },
     removeItem(_key: string) {
+      console.log(_key)
       return Promise.resolve()
     },
   }
@@ -27,7 +38,10 @@ const isServer = typeof window === "undefined"
 const PERSISTED_KEYS: string[] = ["themeConfig"]
 const UNPERSISTED_KEYS: string[] = []
 
-const storage = typeof window !== "undefined" ? createWebStorage("local") : createNoopStorage()
+const storage =
+  typeof window !== "undefined"
+    ? createWebStorage("local")
+    : createNoopStorage()
 
 const persistConfig = {
   key: "NextjsTSAppStore",
@@ -86,7 +100,7 @@ export const useStore = (initialState: any = undefined) => {
   }
 
   if (!store) {
-    store = useMemo(() => initializeStore(initialState), [initialState])
+    store = initializeStore(initialState)
   }
 
   return store
